@@ -129,13 +129,13 @@ h6{
    ========================================================================== */
 
 #headerwrap {
-	background: #bdc3c7;
+	background: #bdc3d7;
 	margin-top: -70px;
 	padding-top: 200px;
 	text-align:center;
 	background-attachment: relative;
 	background-position: center center;
-	min-height: 350px;
+	min-height: 250px;
 	width: 100%;
 	
     -webkit-background-size: 100%;
@@ -161,6 +161,11 @@ h6{
 #headerwrap h4 {
 	font-weight: 400;
 	color: #8e44ad;
+}
+
+#logo {
+	max-width: 50%;
+	margin: 2em;
 }
 
 #social {
