@@ -57,24 +57,33 @@
       ref.on("value", function(snapshot) {
         var snapshotVal = snapshot.val();
 
-        var key = Object.keys(snapshotVal)[0];
-        var data = snapshotVal[key];
+        for(var key in snapshotVal){
 
-        window.t = data;
+          var data = snapshotVal[key];
 
-        console.log(data);
-        console.log(data.lat)
-        console.log(data.lon)
+          console.log(key)
+          console.log(data);
+          console.log(data.lat)
+          console.log(data.lon)
 
-        var latLng = new google.maps.LatLng(data.lat, data.lon);
+          var latLng = new google.maps.LatLng(data.lat, data.lon);
 
-        markers[key] = new google.maps.Marker({
-          position: latLng,
-          map: map,
-          title: "AloneZone " + key
-        })
+          if(markers[key]){
+            removeMarker(key);
+            delete markers[key];
+          }
 
-        toggleMarker(key, data.zone);
+          markers[key] = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            title: "AloneZone " + key
+          })
+
+          toggleMarker(key, data.zone);
+
+
+        }
+
 
         // var marker = new google.maps.Marker({
         //   position: myLatlng,
