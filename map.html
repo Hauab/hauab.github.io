@@ -17,7 +17,9 @@
     </style>
 
     <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script src="assets/data/data.json"></script>
+    <!--<script src="assets/data/data.json"></script>-->
+    <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+
     <script>
       var script = '<script type="text/javascript" src="assets/src/markerclusterer';
       if (document.location.search.indexOf('compiled') !== -1) {
@@ -28,37 +30,72 @@
     </script>
 
     <script>
-      function initialize() {
-        var center = new google.maps.LatLng(37.4419, -122.1419);
 
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
+      var center, map;
+
+      function initialize(){
+
+        center = new google.maps.LatLng(38.818, -77.168754);
+
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
           center: center,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         });
 
-        var markers = [];
-        for (var i = 0; i < 3; i++) {
-          var dataPhoto = data.photos[i];
-          var latLng = new google.maps.LatLng(dataPhoto.latitude,
-              dataPhoto.longitude);
-          var marker = new google.maps.Marker({
-            position: latLng
-          });
-          markers.push(marker);
-        }
-        var markerCluster = new MarkerClusterer(map, markers);
       }
-      google.maps.event.addDomListener(window, 'load', initialize);
+
+      google.maps.event.addDomListener(window, 'load', initialize);  
+
+
       // Get a reference to our posts
       var ref = new Firebase("https://boiling-inferno-9895.firebaseio.com/zones");
 
+      markers = {};
+
       // Attach an asynchronous callback to read the data at our posts reference
       ref.on("value", function(snapshot) {
-        console.log(snapshot.val());
+        var snapshotVal = snapshot.val();
+
+        var key = Object.keys(snapshotVal)[0];
+        var data = snapshotVal[key];
+
+        window.t = data;
+
+        console.log(data);
+        console.log(data.lat)
+        console.log(data.lon)
+
+        var latLng = new google.maps.LatLng(data.lat, data.lon);
+
+        markers[key] = new google.maps.Marker({
+          position: latLng,
+          map: map,
+          title: "AloneZone " + key
+        })
+
+        toggleMarker(key, data.zone);
+
+        // var marker = new google.maps.Marker({
+        //   position: myLatlng,
+        //   map: map,
+        //   title: 'Hello World!'
+        // });
+
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
+
+      function toggleMarker(id, visible){
+        if(visible)
+          markers[id].setMap(map)
+        else
+          markers[id].setMap(null)
+      }
+
+      function removeMarker(id){
+        markers[id].setMap(null)
+      }
     </script>
   </head>
   <body>
